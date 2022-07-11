@@ -1,14 +1,18 @@
 # Logistics-System
 
-Prerequisites
+## Prerequisites
 Creati un microserviciu REST care sa simuleze functionarea unui sistem de gestionare a
 livrarilor de colete catre diverse destinatii.
+
 La pornirea aplicatiei, se vor crea automat tabelele DESTINATIONS, ORDERS si vor fi populate
 cu date din fisierele destinations.csv, orders.csv. (H2 database)
+
 Se va folosi un executor cu maximum 4 threaduri active si un queue size de 100 de taskuri
 pentru a gestiona livrarile.
-Endpoint-uri suportate
-POST /shipping/new-day
+
+## Endpoint-uri suportate
+
+### POST /shipping/new-day
 BODY: empty body
 Avanseaza data curenta a aplicatiei cu o zi. La pornirea aplicatiei, data curenta a aplicatiei va fi
 15-12-2021. (log + console: “New day starting : 15-12-2021”)
@@ -21,47 +25,55 @@ km”). (hint: folositi @Async)
 Dupa un numar de secunde egal cu numarul de km pana la destinatie, threadul de livrare va
 marca livrarile ca fiind finalizate si va actualiza profitul firmei. (1 leu/km pentru fiecare comanda
 care s-a livrat) (log + console: “4 deliveries completed for Ploiesti”)
-POST /orders/add
+
+### POST /orders/add
 BODY: lista de ordere ce trebuie adaugate
 Adauga o lista de noi livrari in baza de date. Data de livrare pentru noile livrari trebuie sa fie
 strict mai mare decat data curenta a aplicatiei (ex. Minim 16-12-2021)
-POST /orders/cancel
+
+### POST /orders/cancel
 BODY: lista de id-uri a livrarilor ce trebuie anulate
 Marcheaza o lista de livrari ca fiind anulata. O livrare poate fi anulata in orice moment, chiar si
 cand este in curs de livrare. O livrare anulata nu va aduce profit. O livrare finalizata nu mai
 poate fi anulata.
-GET /orders/status?date=15-12-2021&destination=Ploiesti
+
+### GET /orders/status?date=15-12-2021&destination=Ploiesti
 Returneaza lista de livrari din ziua si pentru destinatia date ca si parametru.
 Daca parametrul date nu este furnizat, se vor intoarce date despre livrarile din ziua curenta a
 aplicatiei.
 Daca parametrul destination nu este furnizat, se vor intoarce date despre livrarile catre toate
 destinatiile.
-GET /actuator/info
+
+### GET /actuator/info
 Folosind spring boot actuator, se vor da informatii despre data curenta si profitul companiei.
 {
 current-date : 15-12-2021,
 overall-profit : 258
 }
-POST /destinations/add
-PUT /destinations/update
-GET /destinations
-GET /destinations/{destinationId}
-DELETE /destinations/{destinationId}
-Tabele:
-DESTINATIONS
+
+### POST /destinations/add
+### PUT /destinations/update
+### GET /destinations
+### GET /destinations/{destinationId}
+### DELETE /destinations/{destinationId}
+
+## Tabele:
+### DESTINATIONS
 ID (PK)
 NAME (UNIQUE)
 DISTANCE
-ORDERS
+### ORDERS
 ID (PK)
 DESTINATION_ID (FK)
 DELIVERY_DATE
 STATUS
 LAST_UPDATED
-Additional info
+
+## Additional info
 Toate logurile vor contine timestamp la secunda.
 Order status enum: NEW, DELIVERING, DELIVERED, CANCELED
-destinations.csv
+
+### destinations.csv
 Ploiesti,10
 Pitesti,20
 Cluj,30
@@ -72,7 +84,7 @@ Craiova,18
 Iasi,27
 Bacau,16
 Constanta,23
-orders.csv
+### orders.csv
 Ploiesti,15-12-2021
 Ploiesti,15-12-2021
 Pitesti,15-12-2021
