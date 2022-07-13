@@ -1,0 +1,1 @@
+INSERT INTO destination (id, name, distance) VALUES (1, 'USA', 10);
