@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 import java.text.ParseException;
 import java.util.List;
 
@@ -28,6 +29,13 @@ public class DeliveryController
     public ResponseEntity<List<DeliveryDto>> handleDeliveryAdd(@Valid @RequestBody List<DeliveryDto> deliveryDtoList) throws InvalidDeliveryPayloadException, ParseException
     {
         return deliveryservice.addDeliveries(deliveryDtoList);
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<List<DeliveryDto>> handleGetDeliveries(@RequestParam(required = false) @Pattern(regexp = "^\\d{2}-\\d{2}-\\d{4}$") String date,
+                                                                 @RequestParam(defaultValue = "") String destination) throws ParseException
+    {
+        return deliveryservice.findDeliveriesByDateAndDestination(date, destination);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

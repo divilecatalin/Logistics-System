@@ -71,6 +71,19 @@ public class DeliveryService
         return new ResponseEntity<>(addedDeliveries, HttpStatus.OK);
     }
 
+    public ResponseEntity<List<DeliveryDto>> findDeliveriesByDateAndDestination(String date, String destination) throws ParseException
+    {
+        long dateTimeStamp;
+        if (date != null)
+        {
+            dateTimeStamp = ApplicationGlobalData.getTimestampFromString(date);
+        } else {
+            dateTimeStamp = ApplicationGlobalData.currentDate;
+        }
+        List<Delivery> foundDeliveries = deliveryRepository.findAllByDeliveryDateAndDestination_NameContainingIgnoreCase(dateTimeStamp, destination);
+        return new ResponseEntity<>(DeliveryConverter.deliveryListToDtoList(foundDeliveries), HttpStatus.OK);
+    }
+
     public void loadDeliveryCsv() throws ParseException, InvalidDeliveryPayloadException
     {
         deliveryRepository.deleteAll();

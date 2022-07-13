@@ -6,6 +6,8 @@ import com.java.logisticssystem.dto.DestinationDto;
 import com.java.logisticssystem.model.Delivery;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DeliveryConverter
 {
@@ -24,5 +26,15 @@ public class DeliveryConverter
         deliveryDto.setDeliveryDate(ApplicationGlobalData.getStringFromTimestamp(delivery.getDeliveryDate()));
 
         return deliveryDto;
+    }
+
+    public static List<DeliveryDto> deliveryListToDtoList(List<Delivery> deliveries) throws ParseException
+    {
+        List<DeliveryDto> dtos = new ArrayList<>();
+        for (Delivery delivery : deliveries)
+        {
+            dtos.add(deliveryToDeliveryDto(delivery));
+        }
+        return dtos;
     }
 }

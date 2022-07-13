@@ -13,7 +13,7 @@ public class ApplicationGlobalData
     {
         try
         {
-            currentDate = getTimestampFromString("14-12-2021");
+            currentDate = getTimestampFromString("15-12-2021");
         } catch (ParseException e)
         {
             e.printStackTrace();
@@ -22,7 +22,7 @@ public class ApplicationGlobalData
 
     public static long companyProfit;
 
-    private static long getTimestampFromString(String dateString) throws ParseException
+    public static long getTimestampFromString(String dateString) throws ParseException
     {
         return simpleDateFormat.parse(dateString).getTime();
     }
