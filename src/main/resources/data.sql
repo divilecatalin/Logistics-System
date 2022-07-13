@@ -1,1 +1,10 @@
-INSERT INTO destination (id, name, distance) VALUES (1, 'USA', 10);
+INSERT INTO destination (id, name, distance) VALUES (1, 'Ploiesti', 10);
+INSERT INTO destination (id, name, distance) VALUES (2, 'Pitesti', 20);
+INSERT INTO destination (id, name, distance) VALUES (3, 'Cluj', 30);
+INSERT INTO destination (id, name, distance) VALUES (4, 'Oradea', 35);
+INSERT INTO destination (id, name, distance) VALUES (5, 'Satu Mare', 40);
+INSERT INTO destination (id, name, distance) VALUES (6, 'Giurgiu', 12);
+INSERT INTO destination (id, name, distance) VALUES (7, 'Craiova', 18);
+INSERT INTO destination (id, name, distance) VALUES (8, 'Iasi', 27);
+INSERT INTO destination (id, name, distance) VALUES (9, 'Bacau', 16);
+INSERT INTO destination (id, name, distance) VALUES (10, 'Constanta', 23);

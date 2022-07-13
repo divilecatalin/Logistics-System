@@ -13,6 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -65,5 +69,39 @@ public class DeliveryService
             addedDeliveries.add(addDelivery(deliveryDto));
         }
         return new ResponseEntity<>(addedDeliveries, HttpStatus.OK);
+    }
+
+    public void loadDeliveryCsv() throws ParseException, InvalidDeliveryPayloadException
+    {
+        deliveryRepository.deleteAll();
+        List<DeliveryDto> deliveries = new ArrayList<>();
+        try
+        {
+            File file=new File("src/main/resources/deliveries.csv");    //creates a new file instance
+            FileReader fr=new FileReader(file);   //reads the file
+            BufferedReader br=new BufferedReader(fr);  //creates a buffering character input stream
+            String line;
+            while((line=br.readLine())!=null)
+            {
+                String [] tokens = line.split(",");
+                if (tokens.length != 2) {
+                    continue;
+                }
+                DeliveryDto deliveryDto = new DeliveryDto();
+                deliveryDto.setDeliveryDate(tokens[1]);
+                Destination destination = destinationRepository.findByName(tokens[0]);
+                if (destination == null) {
+                    continue;
+                }
+                deliveryDto.setDestinationId(destination.getId());
+                deliveries.add(deliveryDto);
+            }
+            fr.close();    //closes the stream and release the resources
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+        addDeliveries(deliveries);
     }
 }
