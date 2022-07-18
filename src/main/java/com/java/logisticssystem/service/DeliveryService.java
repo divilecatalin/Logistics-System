@@ -3,6 +3,7 @@ package com.java.logisticssystem.service;
 import com.java.logisticssystem.ApplicationGlobalData;
 import com.java.logisticssystem.converter.DeliveryConverter;
 import com.java.logisticssystem.dto.DeliveryDto;
+import com.java.logisticssystem.dto.DestinationDto;
 import com.java.logisticssystem.exception.InvalidDeliveryPayloadException;
 import com.java.logisticssystem.model.Delivery;
 import com.java.logisticssystem.model.Destination;
@@ -18,10 +19,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.java.logisticssystem.exception.InvalidDeliveryPayloadException.INVALID_DELIVERY_DATE;
 import static com.java.logisticssystem.exception.InvalidDeliveryPayloadException.INVALID_DESTINATION_ID;
@@ -42,8 +41,8 @@ public class DeliveryService
     {
         Delivery delivery = new Delivery();
 
-        long deliveryTime = ApplicationGlobalData.simpleDateFormat.parse(deliveryDto.getDeliveryDate()).getTime();
-        if (deliveryTime < ApplicationGlobalData.currentDate) {
+        long deliveryTime = ApplicationGlobalData.getTimestampFromString(deliveryDto.getDeliveryDate());
+        if (deliveryTime < ApplicationGlobalData.getCurrentDateMilis()) {
             throw new InvalidDeliveryPayloadException(INVALID_DELIVERY_DATE);
         }
 
@@ -78,7 +77,7 @@ public class DeliveryService
         {
             dateTimeStamp = ApplicationGlobalData.getTimestampFromString(date);
         } else {
-            dateTimeStamp = ApplicationGlobalData.currentDate;
+            dateTimeStamp = ApplicationGlobalData.getCurrentDateMilis();
         }
         List<Delivery> foundDeliveries = deliveryRepository.findAllByDeliveryDateAndDestination_NameContainingIgnoreCase(dateTimeStamp, destination);
         return new ResponseEntity<>(DeliveryConverter.deliveryListToDtoList(foundDeliveries), HttpStatus.OK);
@@ -116,5 +115,27 @@ public class DeliveryService
             e.printStackTrace();
         }
         addDeliveries(deliveries);
+    }
+
+    public Map<DestinationDto, List<DeliveryDto>> newDay()
+    {
+        ApplicationGlobalData.moveToNextDay();
+
+        Map<Destination, List<Delivery>> deliveriesByDestination = deliveryRepository.findAllByDeliveryDate(ApplicationGlobalData.getCurrentDateMilis()).stream()
+                .collect(Collectors.groupingBy(Delivery::getDestination));
+
+        deliveriesByDestination.forEach(this::submitNewTask);
+
+        return deliveriesByDestination.values().stream()
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList())
+                .stream()
+                .map(DeliveryConverter::deliveryToDeliveryDto)
+                .collect(Collectors.groupingBy(DeliveryDto::getDestination));
+    }
+
+    private void submitNewTask(Destination key, List<Delivery> value)
+    {
+
     }
 }

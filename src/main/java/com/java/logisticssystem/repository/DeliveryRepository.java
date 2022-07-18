@@ -8,4 +8,5 @@ import java.util.List;
 public interface DeliveryRepository extends JpaRepository<Delivery, Long>
 {
     List<Delivery> findAllByDeliveryDateAndDestination_NameContainingIgnoreCase(long deliveryDate, String destination);
+    List<Delivery> findAllByDeliveryDate(long deliveryDate);
 }

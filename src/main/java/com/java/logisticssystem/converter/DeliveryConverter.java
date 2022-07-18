@@ -11,7 +11,7 @@ import java.util.List;
 
 public class DeliveryConverter
 {
-    public static DeliveryDto deliveryToDeliveryDto(Delivery delivery) throws ParseException
+    public static DeliveryDto deliveryToDeliveryDto(Delivery delivery)
     {
         DeliveryDto deliveryDto = new DeliveryDto();
 

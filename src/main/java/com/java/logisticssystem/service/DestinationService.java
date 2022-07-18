@@ -47,6 +47,7 @@ public class DestinationService
         Optional<Destination> optionalDestination = destinationRepository.findById(id);
         if (optionalDestination.isPresent()) {
             destinationRepository.delete(optionalDestination.get());
+//            destinationRepository.deleteById(id);
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);

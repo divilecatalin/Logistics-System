@@ -9,6 +9,7 @@ import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.text.ParseException;
+import java.time.format.DateTimeParseException;
 
 import static com.java.logisticssystem.exception.InvalidDeliveryPayloadException.INVALID_DELIVERY_DATE_FORMAT;
 
@@ -33,8 +34,8 @@ public class DeliveryDto
     public boolean isDeliveryDateFormatValid() {
         try
         {
-            ApplicationGlobalData.simpleDateFormat.parse(this.getDeliveryDate());
-        } catch (ParseException e)
+            ApplicationGlobalData.formatter.parse(this.getDeliveryDate());
+        } catch (DateTimeParseException e)
         {
             return false;
         }
