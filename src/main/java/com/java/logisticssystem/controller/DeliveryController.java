@@ -15,7 +15,8 @@ import java.text.ParseException;
 import java.util.List;
 
 @Validated
-@RestController("/delivery")
+@RestController
+@RequestMapping("/delivery")
 public class DeliveryController
 {
     private final DeliveryService deliveryservice;

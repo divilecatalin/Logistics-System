@@ -7,9 +7,9 @@ import lombok.Data;
 @Builder
 public class DestinationDto
 {
-    private long id;
+    private Long id;
 
     private String name;
 
-    private long distance;
+    private Long distance;
 }
