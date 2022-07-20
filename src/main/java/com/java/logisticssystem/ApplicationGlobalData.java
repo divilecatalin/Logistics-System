@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class ApplicationGlobalData
 {
@@ -17,7 +18,7 @@ public class ApplicationGlobalData
         currentDate = LocalDate.of(2021, 12, 14);
     }
 
-    public static long companyProfit;
+    public static AtomicLong companyProfit = new AtomicLong(0);
 
     public static long getTimestampFromString(String dateString)
     {

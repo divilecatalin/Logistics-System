@@ -10,8 +10,11 @@ import com.java.logisticssystem.model.Destination;
 import com.java.logisticssystem.model.OrderStatus;
 import com.java.logisticssystem.repository.DeliveryRepository;
 import com.java.logisticssystem.repository.DestinationRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -28,16 +31,20 @@ import static com.java.logisticssystem.exception.InvalidDeliveryPayloadException
 @Service
 public class DeliveryService
 {
+    private final Logger logger = LoggerFactory.getLogger(DeliveryService.class);
+
     private final DeliveryRepository deliveryRepository;
     private final DestinationRepository destinationRepository;
+    private final DeliveryProcessor deliveryProcessor;
 
-    public DeliveryService(DeliveryRepository deliveryRepository, DestinationRepository destinationRepository)
+    public DeliveryService(DeliveryRepository deliveryRepository, DestinationRepository destinationRepository, DeliveryProcessor deliveryProcessor)
     {
         this.deliveryRepository = deliveryRepository;
         this.destinationRepository = destinationRepository;
+        this.deliveryProcessor = deliveryProcessor;
     }
 
-    public DeliveryDto addDelivery(DeliveryDto deliveryDto) throws InvalidDeliveryPayloadException, ParseException
+    public DeliveryDto addDelivery(DeliveryDto deliveryDto) throws InvalidDeliveryPayloadException
     {
         Delivery delivery = new Delivery();
 
@@ -124,7 +131,7 @@ public class DeliveryService
         Map<Destination, List<Delivery>> deliveriesByDestination = deliveryRepository.findAllByDeliveryDate(ApplicationGlobalData.getCurrentDateMilis()).stream()
                 .collect(Collectors.groupingBy(Delivery::getDestination));
 
-        deliveriesByDestination.forEach(this::submitNewTask);
+        deliveriesByDestination.forEach(deliveryProcessor::submitNewTask);
 
         return deliveriesByDestination.values().stream()
                 .flatMap(Collection::stream)
@@ -134,8 +141,4 @@ public class DeliveryService
                 .collect(Collectors.groupingBy(DeliveryDto::getDestination));
     }
 
-    private void submitNewTask(Destination key, List<Delivery> value)
-    {
-
-    }
 }
